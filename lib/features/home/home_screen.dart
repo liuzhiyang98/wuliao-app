@@ -37,14 +37,12 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) context.go('/login');
       return;
     }
-    // 从 couples 表检查是否已配对
     final r = await supabase
-        .from('couples')
-        .select('id')
-        .or('user_a.eq.$uid,user_b.eq.$uid')
-        .eq('status', 'active')
-        .maybeSingle();
-    if (r == null) {
+        .from('profiles')
+        .select('couple_id')
+        .eq('id', uid)
+        .single();
+    if (r['couple_id'] == null) {
       if (mounted) context.go('/pairing');
       return;
     }
