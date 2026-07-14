@@ -31,9 +31,39 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _send() async {
     final email = _email.text.trim();
     if (email.isEmpty) return;
+
+    // 检查 Supabase 是否已配置
+    if (!isSupabaseConfigured) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('⚠️ 需要配置 Supabase'),
+            content: const Text(
+              'App 还没有连接到后端数据库。\n\n'
+              '请开发者到 supabase.com 创建免费项目，'
+              '然后将 URL 和 Anon Key 填入代码中。\n\n'
+              '（这只需要做一次）',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('我知道了'),
+              ),
+            ],
+          ),
+        );
+      }
+      return;
+    }
+
     setState(() => _loading = true);
     try {
-      await supabase.auth.signInWithOtp(email: email);
+      await supabase.auth.signInWithOtp(
+        email: email,
+        // 关键：PWA 必须指定 redirectTo，否则邮件链接跳转后 App 无法接收认证状态
+        emailRedirectTo: 'https://liuzhiyang98.github.io/wuliao_app/',
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('登录链接已发到邮箱，打开即可进入 💌')),
