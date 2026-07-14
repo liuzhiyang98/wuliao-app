@@ -4,12 +4,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 // Dart 自动将相邻字符串字面量合并为单个常量
 const String supabaseUrl = 'https://jvpqa'
     'lqqmsueaxnvylar.supabase.co';
-const String supabaseAnonKey = 'sb_secret_Whh6yTe'
-    'YufAkcSVqWOIVRA_mnZgKl44';
+const String supabaseAnonKey = 'eyJhbGciOiJIUzI1'
+    'NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO'
+    'iJzdXBhYmFzZSIsInJlZiI6Imp2cH'
+    'FhbHFxbXN1ZWF4bnZ5bGFyIiwicm9sZS'
+    'I6ImFub24iLCJpYXQiOjE3ODQwMzYzODAs'
+    'ImV4cCI6MjA5OTYxMjM4MH0.V7_kUmleHX'
+    '9Hxitx8dW60CrZ_TeQ1gjIO1xJnn-Y8t4';
 
 bool get isSupabaseConfigured =>
     supabaseUrl.startsWith('http') &&
-    supabaseAnonKey.startsWith('sb_');
+    supabaseAnonKey.startsWith('eyJ');
 
 Future<void> initSupabase() async {
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
