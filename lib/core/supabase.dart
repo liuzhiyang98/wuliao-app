@@ -1,9 +1,15 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// TODO: 在 https://supabase.com 新建一个免费项目，
-// 打开 Project Settings -> API，把下面两个值填进来。
+// ⚠️ 必须配置：在 https://supabase.com 新建免费项目，
+// 打开 Project Settings → API，复制下面两个值填入。
 const String supabaseUrl = 'YOUR_SUPABASE_URL';
 const String supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
+
+/// 检查 Supabase 是否已配置（占位符未替换时返回 false）
+bool get isSupabaseConfigured =>
+    supabaseUrl != 'YOUR_SUPABASE_URL' &&
+    supabaseAnonKey != 'YOUR_SUPABASE_ANON_KEY' &&
+    supabaseUrl.startsWith('http');
 
 Future<void> initSupabase() async {
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
