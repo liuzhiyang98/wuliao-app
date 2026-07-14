@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+<dict>
+  <!-- app-store: 走 TestFlight / App Store；ad-hoc: 侧载安装（需登记设备 UDID） -->
+  <key>method</key>
+  <string>app-store</string>
+
+  <key>signingStyle</key>
+  <string>manual</string>
+
+  <key>teamID</key>
+  <string>YOUR_TEAM_ID</string>
+
+  <key>provisioningProfiles</key>
+  <dict>
+    <key>com.example.wuliao</key>
+    <string>吾俩 Distribution</string>
+  </dict>
+
+  <key>uploadBitcode</key>
+  <false/>
+  <key>uploadSymbols</key>
+  <true/>
+</dict>
+</plist>
