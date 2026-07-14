@@ -7,6 +7,7 @@ class MediaRepository {
 
   Future<List<Map<String, dynamic>>> songs() async {
     final cid = await _coupleId();
+    if (cid == null) return [];
     final rows = await supabase
         .from('songlist')
         .select()
@@ -18,6 +19,7 @@ class MediaRepository {
   Future<void> addSong(String title, String? artist) async {
     final uid = supabase.auth.currentUser!.id;
     final cid = await _coupleId();
+    if (cid == null) return;
     await supabase.from('songlist').insert({
       'couple_id': cid,
       'added_by': uid,
@@ -31,6 +33,7 @@ class MediaRepository {
 
   Future<List<Map<String, dynamic>>> watch() async {
     final cid = await _coupleId();
+    if (cid == null) return [];
     final rows = await supabase
         .from('watchlist')
         .select()
@@ -42,6 +45,7 @@ class MediaRepository {
   Future<void> addWatch(String title, String? note) async {
     final uid = supabase.auth.currentUser!.id;
     final cid = await _coupleId();
+    if (cid == null) return;
     await supabase.from('watchlist').insert({
       'couple_id': cid,
       'added_by': uid,
