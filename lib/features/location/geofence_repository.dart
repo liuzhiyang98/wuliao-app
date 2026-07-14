@@ -61,9 +61,12 @@ class GeofenceRepository {
       event: PostgresChangeEvent.insert,
       schema: 'public',
       table: 'checkins',
-      filter: PostgresChangeFilter('user_id', PostgresChangeOp.notEqual, uid),
+      // 注意：新版 realtime_client 的 PostgresChangeFilter 使用命名参数，
+      // 为兼容性，这里在回调内过滤（版本无关方案）
       callback: (payload) {
         final row = payload.newRecord;
+        // 只处理伴侣的报备事件（忽略自己的）
+        if (row['user_id'] == uid) return;
         final name = (row['place_name'] as String?) ?? '某个地点';
         final isEnter = row['event_type'] == 'enter';
         final emoji = placeEmoji(name);
