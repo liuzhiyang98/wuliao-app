@@ -27,17 +27,6 @@ jobs:
 
       - run: flutter config --enable-web
       - run: flutter pub get
-
-      # Split credentials to bypass GitHub secret scanning
-      - name: Inject credentials
-        run: |
-          P1="https://jvpqalqq"
-          P2="msueaxnvylar.supabase.co"
-          K1="sb_secret_Whh6yTe"
-          K2="YufAkcSVqWOIVRA_mnZgKl44"
-          sed -i "s|YOUR_SUPABASE_URL|${P1}${P2}|g" lib/core/supabase.dart
-          sed -i "s|YOUR_SUPABASE_ANON_KEY|${K1}${K2}|g" lib/core/supabase.dart
-
       - run: flutter create --platforms=web .
 
       - name: Build web release
