@@ -1,7 +1,8 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong2.dart';
+import 'package:latlong2/latlong.dart';
 import 'location_service.dart';
 
 class MapScreen extends StatefulWidget {
@@ -42,7 +43,16 @@ class _MapScreenState extends State<MapScreen> {
 
   void _updateDistance() {
     if (_me == null || _partner == null) return;
-    final d = const Distance().as(LengthUnit.Kilometer, _me!, _partner!);
+    // 内联 Haversine 公式（避免 Distance 类 Web 兼容问题）
+    const R = 6371; // 地球半径 km
+    final lat1 = _me!.latitude * pi / 180;
+    final lat2 = _partner!.latitude * pi / 180;
+    final dLat = (_partner!.latitude - _me!.latitude) * pi / 180;
+    final dLng = (_partner!.longitude - _me!.longitude) * pi / 180;
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(lat1) * cos(lat2) * sin(dLng / 2) * sin(dLng / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    final d = R * c;
     setState(() => _distance = '你们现在相距约 ${d.toStringAsFixed(2)} km');
   }
 
