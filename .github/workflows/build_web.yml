@@ -3,13 +3,21 @@ name: Build Flutter Web
 on:
   push:
     branches: [main]
+    paths:
+      - 'wuliao_app/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/build_web.yml'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -17,21 +25,47 @@ jobs:
           flutter-version: '3.24.0'
           channel: 'stable'
 
-      - name: Get dependencies
+      - name: Fix project structure for Flutter Web
+        run: |
+          echo "=== Fixing project structure ==="
+          ls -la
+          if [ -d "wuliao_app/lib" ] && [ ! -d "lib" ]; then
+            echo "Creating lib from wuliao_app/lib..."
+            cp -r wuliao_app/lib ./lib
+            echo "lib directory created"
+          fi
+          if [ ! -d "web" ]; then
+            mkdir -p web
+            echo "web directory created"
+          fi
+
+      - name: Create web/index.html
+        run: |
+          cat > web/index.html << 'HTMLEOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <base href="/">
+            <meta charset="UTF-8">
+            <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+            <meta name="description" content="吾俩 - 双人专属情侣App">
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-status-bar-style" content="black">
+            <meta name="apple-mobile-web-app-title" content="吾俩">
+            <title>吾俩</title>
+            <script src="flutter_bootstrap.js" async></script>
+          </head>
+          <body></body>
+          </html>
+          HTMLEOF
+
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Build Web
+      - name: Build web app
         run: flutter build web --release --base-href="/"
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: flutter-web-build
-          path: build/web/
-          retention-days: 30
-
-      - name: Deploy to gh-pages
-        if: github.ref == 'refs/heads/main'
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
