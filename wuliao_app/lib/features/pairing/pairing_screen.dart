@@ -56,7 +56,7 @@ class _PairingScreenState extends State<PairingScreen> {
           .from('couples')
           .update({'user_b': uid})
           .eq('invite_code', code)
-          .is('user_b', null) // 确保还没人加入
+          .filter('user_b', 'is', 'null') // 确保还没人加入
           .select('id')
           .maybeSingle();
 
