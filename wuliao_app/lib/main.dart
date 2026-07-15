@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
     try {
       if (_isSignUp) {
-        await supabase.auth.signUpWithPassword(
+        await supabase.auth.signUp(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
