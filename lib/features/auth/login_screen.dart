@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -59,7 +60,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     setState(() => _loading = true);
     try {
-      await supabase.auth.signInWithOtp(email: email);
+      await supabase.auth.signInWithOtp(
+        email: email,
+        // Web 下把回跳地址锁定为当前站点（含 /wuliao_app 子路径）。
+        // 这样即使 Supabase 后台 Site URL 配错，邮件里的魔法链接也不会 404。
+        emailRedirectTo: kIsWeb ? Uri.base.origin : null,
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('登录链接已发到邮箱，打开即可进入 💌')),
